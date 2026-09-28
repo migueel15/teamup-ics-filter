@@ -66,12 +66,28 @@ func handleCalendar(w http.ResponseWriter, r *http.Request) {
 
 		newEvent.SetSummary(summary.Value)
 
-		if startDate, err := event.GetStartAt(); err == nil {
-			newEvent.SetStartAt(startDate, ics.WithTZID("Europe/Madrid"))
+		start := event.GetProperty(ics.ComponentPropertyDtStart)
+		if start != nil {
+			newEvent.SetProperty(
+				ics.ComponentPropertyDtStart,
+				start.Value,
+				&ics.KeyValues{
+					Key:   string(ics.ParameterTzid),
+					Value: []string{"Europe/Madrid"},
+				},
+			)
 		}
 
-		if endDate, err := event.GetEndAt(); err == nil {
-			newEvent.SetEndAt(endDate, ics.WithTZID("Europe/Madrid"))
+		end := event.GetProperty(ics.ComponentPropertyDtEnd)
+		if end != nil {
+			newEvent.SetProperty(
+				ics.ComponentPropertyDtEnd,
+				end.Value,
+				&ics.KeyValues{
+					Key:   string(ics.ParameterTzid),
+					Value: []string{"Europe/Madrid"},
+				},
+			)
 		}
 
 		if description != nil {
@@ -80,6 +96,8 @@ func handleCalendar(w http.ResponseWriter, r *http.Request) {
 				description.Value,
 			)
 		}
+
+		fmt.Println(newEvent.GetStartAt())
 	}
 
 	w.Header().Set("Content-Type", "text/calendar; charset=utf-8")
