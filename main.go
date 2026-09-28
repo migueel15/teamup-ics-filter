@@ -67,11 +67,11 @@ func handleCalendar(w http.ResponseWriter, r *http.Request) {
 		newEvent.SetSummary(summary.Value)
 
 		if startDate, err := event.GetStartAt(); err == nil {
-			newEvent.SetStartAt(startDate)
+			newEvent.SetStartAt(startDate, ics.WithTZID("Europe/Madrid"))
 		}
 
 		if endDate, err := event.GetEndAt(); err == nil {
-			newEvent.SetEndAt(endDate)
+			newEvent.SetEndAt(endDate, ics.WithTZID("Europe/Madrid"))
 		}
 
 		if description != nil {
