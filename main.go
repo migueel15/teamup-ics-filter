@@ -5,10 +5,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	ics "github.com/arran4/golang-ical"
 )
+
+var emailSuffix = regexp.MustCompile(`\s*\([^()@\s]+@[^()@\s]+\)\s*$`)
 
 func main() {
 	http.HandleFunc("/calendar.ics", handleCalendar)
@@ -64,7 +67,8 @@ func handleCalendar(w http.ResponseWriter, r *http.Request) {
 
 		newEvent := filtered.AddEvent(uid.Value)
 
-		newEvent.SetSummary(summary.Value)
+		cleanSummary := emailSuffix.ReplaceAllString(summary.Value, "")
+		newEvent.SetSummary(cleanSummary)
 
 		start := event.GetProperty(ics.ComponentPropertyDtStart)
 		if start != nil {
