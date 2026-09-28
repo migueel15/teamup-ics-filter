@@ -1,0 +1,12 @@
+services:
+  calendar:
+    build: .
+    container_name: calendar-filter
+    restart: unless-stopped
+
+    environment:
+      PORT: ${PORT}
+      CALENDAR_URL: ${CALENDAR_URL}
+
+    ports:
+      - "${PORT}:8080"
