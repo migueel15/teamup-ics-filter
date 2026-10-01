@@ -148,8 +148,14 @@ func handleCalendarDos(w http.ResponseWriter, r *http.Request) {
 
 		description := event.GetProperty(ics.ComponentPropertyDescription)
 
-		if description != nil && strings.Contains(description.Value, "GR2") {
-			continue
+		if description != nil {
+			isGPS := strings.Contains(summary.Value, "Gestión de Proyectos Software")
+			isGR1 := strings.Contains(description.Value, "GR1")
+			isGR2 := strings.Contains(description.Value, "GR2")
+
+			if (!isGPS && isGR2) || (isGPS && (isGR1 || isGR2)) {
+				continue
+			}
 		}
 
 		uid := event.GetProperty(ics.ComponentPropertyUniqueId)
